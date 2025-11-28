@@ -13,6 +13,7 @@ contract PaymentGatewayTest is Test {
     event Deposit(address indexed user, uint256 amount, uint256 timestamp);
     event Withdraw(address indexed to, uint256 amount, uint256 timestamp);
     event UserWithdraw(address indexed user, uint256 amount, uint256 timestamp);
+    event AdminPayout(address indexed to, uint256 amount, uint256 timestamp);
 
     function setUp() public {
         owner = address(this);
@@ -141,6 +142,44 @@ contract PaymentGatewayTest is Test {
         vm.stopPrank();
 
         assertEq(gateway.getDeposit(user1), 1 ether);
+    }
+
+    function test_AdminPayout() public {
+        vm.deal(user1, 10 ether);
+        vm.prank(user1);
+        gateway.deposit{value: 5 ether}();
+
+        address payable recipient = payable(address(0x3));
+        vm.deal(recipient, 0);
+
+        vm.expectEmit(true, false, false, true);
+        emit AdminPayout(recipient, 3 ether, block.timestamp);
+
+        gateway.adminPayout(recipient, 3 ether);
+
+        assertEq(recipient.balance, 3 ether);
+        assertEq(gateway.getBalance(), 2 ether);
+    }
+
+    function test_AdminPayoutInsufficientBalance() public {
+        vm.deal(user1, 10 ether);
+        vm.prank(user1);
+        gateway.deposit{value: 5 ether}();
+
+        address payable recipient = payable(address(0x3));
+        vm.expectRevert("PaymentGateway: insufficient balance");
+        gateway.adminPayout(recipient, 10 ether);
+    }
+
+    function test_OnlyOwnerCanAdminPayout() public {
+        vm.deal(user1, 10 ether);
+        vm.prank(user1);
+        gateway.deposit{value: 5 ether}();
+
+        address payable recipient = payable(address(0x3));
+        vm.prank(user1);
+        vm.expectRevert();
+        gateway.adminPayout(recipient, 3 ether);
     }
 }
 
