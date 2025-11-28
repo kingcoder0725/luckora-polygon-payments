@@ -12,7 +12,6 @@ contract PaymentGatewayTest is Test {
 
     event Deposit(address indexed user, uint256 amount, uint256 timestamp);
     event Withdraw(address indexed to, uint256 amount, uint256 timestamp);
-    event UserWithdraw(address indexed user, uint256 amount, uint256 timestamp);
     event AdminPayout(address indexed to, uint256 amount, uint256 timestamp);
 
     function setUp() public {
@@ -74,31 +73,6 @@ contract PaymentGatewayTest is Test {
         gateway.withdraw(recipient, 10 ether);
     }
 
-    function test_UserWithdraw() public {
-        vm.deal(user1, 10 ether);
-        vm.prank(user1);
-        gateway.deposit{value: 5 ether}();
-
-        uint256 initialBalance = user1.balance;
-
-        vm.prank(user1);
-        gateway.userWithdraw(3 ether);
-
-        assertEq(gateway.getDeposit(user1), 2 ether);
-        assertEq(gateway.totalDeposits(), 2 ether);
-        assertEq(user1.balance, initialBalance + 3 ether);
-    }
-
-    function test_UserWithdrawInsufficientDeposit() public {
-        vm.deal(user1, 10 ether);
-        vm.prank(user1);
-        gateway.deposit{value: 5 ether}();
-
-        vm.prank(user1);
-        vm.expectRevert("PaymentGateway: insufficient deposit balance");
-        gateway.userWithdraw(10 ether);
-    }
-
     function test_MultipleDeposits() public {
         vm.deal(user1, 20 ether);
         vm.deal(user2, 20 ether);
@@ -130,18 +104,18 @@ contract PaymentGatewayTest is Test {
 
     function test_ReentrancyProtection() public {
         // This test ensures ReentrancyGuard is working
-        // In a real scenario, you'd test with a malicious contract
         vm.deal(user1, 10 ether);
         vm.prank(user1);
         gateway.deposit{value: 5 ether}();
 
-        // Multiple withdrawals should work normally
-        vm.startPrank(user1);
-        gateway.userWithdraw(2 ether);
-        gateway.userWithdraw(2 ether);
-        vm.stopPrank();
+        // Multiple deposits should work normally
+        vm.prank(user1);
+        gateway.deposit{value: 2 ether}();
+        vm.prank(user1);
+        gateway.deposit{value: 1 ether}();
 
-        assertEq(gateway.getDeposit(user1), 1 ether);
+        assertEq(gateway.getDeposit(user1), 8 ether);
+        assertEq(gateway.totalDeposits(), 8 ether);
     }
 
     function test_AdminPayout() public {
@@ -180,6 +154,27 @@ contract PaymentGatewayTest is Test {
         vm.prank(user1);
         vm.expectRevert();
         gateway.adminPayout(recipient, 3 ether);
+    }
+
+    function test_UsersCannotWithdrawDirectly() public {
+        vm.deal(user1, 10 ether);
+        vm.prank(user1);
+        gateway.deposit{value: 5 ether}();
+
+        // Verify that userWithdraw function no longer exists
+        // This is verified by the fact that it's been removed from the contract
+        // Users must use adminPayout through the backend
+        assertEq(gateway.getDeposit(user1), 5 ether);
+        assertEq(gateway.getBalance(), 5 ether);
+        
+        // Users can only withdraw through adminPayout (admin only)
+        // Attempting to call adminPayout as user should fail
+        vm.prank(user1);
+        vm.expectRevert();
+        gateway.adminPayout(user1, 1 ether);
+        
+        // Balance should remain unchanged
+        assertEq(gateway.getBalance(), 5 ether);
     }
 }
 

@@ -22,9 +22,6 @@ contract PaymentGateway is Ownable, ReentrancyGuard {
     /// @notice Emitted when owner withdraws funds
     event Withdraw(address indexed to, uint256 amount, uint256 timestamp);
 
-    /// @notice Emitted when a user withdraws their deposit
-    event UserWithdraw(address indexed user, uint256 amount, uint256 timestamp);
-
     /// @notice Emitted when admin performs a payout
     event AdminPayout(address indexed to, uint256 amount, uint256 timestamp);
 
@@ -70,29 +67,11 @@ contract PaymentGateway is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice User withdraws their own deposit
-     * @param amount Amount to withdraw
-     * @dev Uses ReentrancyGuard for security
-     */
-    function userWithdraw(uint256 amount) external nonReentrant {
-        require(amount > 0, "PaymentGateway: amount must be greater than 0");
-        require(deposits[msg.sender] >= amount, "PaymentGateway: insufficient deposit balance");
-        require(address(this).balance >= amount, "PaymentGateway: insufficient contract balance");
-
-        deposits[msg.sender] -= amount;
-        totalDeposits -= amount;
-
-        (bool success, ) = payable(msg.sender).call{value: amount}("");
-        require(success, "PaymentGateway: transfer failed");
-
-        emit UserWithdraw(msg.sender, amount, block.timestamp);
-    }
-
-    /**
      * @notice Admin payout function - allows owner to payout funds to any address
      * @param to Address to receive the funds
      * @param amount Amount to payout
-     * @dev Only callable by owner, uses ReentrancyGuard
+     * @dev Only callable by owner. Users cannot withdraw directly - all withdrawals must go through admin approval.
+     * Uses ReentrancyGuard for security.
      */
     function adminPayout(address to, uint256 amount) external onlyOwner nonReentrant {
         require(to != address(0), "PaymentGateway: invalid address");
