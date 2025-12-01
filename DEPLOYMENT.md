@@ -4,13 +4,11 @@
 
 ### Deployment Details
 
-- **Contract Address**: `0x7044BD47899eFdB66f29abba82662A3BBF5eaC5B`
+- **Contract Address**: `0x02E2EA37095BBA1269d0e8e89bd2c8f72E3Bbc9B`
 - **Network**: Polygon Amoy Testnet (Chain ID: 80002)
 - **Owner Address**: `0xa57D5fb4d4d8f7548a78f175Af481C42cb24e39e`
 - **Deployer Address**: `0xa57D5fb4d4d8f7548a78f175Af481C42cb24e39e`
-- **Transaction Hash**: `0x42bf69fd9d3084c9d4f9a28bdab923bd7cb142338936d5a13cfe7a011eb7e3ce`
-- **Transaction Link**: [View on PolygonScan Amoy](https://amoy.polygonscan.com/tx/0x42bf69fd9d3084c9d4f9a28bdab923bd7cb142338936d5a13cfe7a011eb7e3ce)
-- **Verification**: ✅ Verified on [PolygonScan Amoy](https://amoy.polygonscan.com/address/0x7044bd47899efdb66f29abba82662a3bbf5eac5b)
+- **Verification**: ✅ Verified on [PolygonScan Amoy](https://amoy.polygonscan.com/address/0x02e2ea37095bba1269d0e8e89bd2c8f72e3bbc9b)
 
 ### Deployment Command
 
@@ -39,13 +37,13 @@ https://amoy.polygonscan.com/address/0x7044bd47899efdb66f29abba82662a3bbf5eac5b
 ### Next Steps
 
 1. **Update Backend Configuration**
-   - Set `POLYGON_CONTRACT_ADDRESS=0x7044BD47899eFdB66f29abba82662A3BBF5eaC5B`
+   - Set `POLYGON_CONTRACT_ADDRESS=0x02E2EA37095BBA1269d0e8e89bd2c8f72E3Bbc9B`
    - Ensure `POLYGON_RPC_URL` points to Amoy testnet
    - Ensure `POLYGON_ADMIN_PRIVATE_KEY` matches the deployer's private key
 
 2. **Test the Contract**
    - Test deposit functionality
-   - Test admin payout functionality
+   - Test withdraw functionality
    - Verify event emission
 
 3. **Mainnet Deployment** (when ready)
@@ -56,7 +54,7 @@ https://amoy.polygonscan.com/address/0x7044bd47899efdb66f29abba82662a3bbf5eac5b
 ## Contract Functions
 
 - `deposit()` - Users can deposit native MATIC
-- `adminPayout(address to, uint256 amount)` - Owner can payout to any address
+- `withdraw(address to, uint256 amount)` - Owner can withdraw funds
 - `getDeposit(address user)` - Get user's deposit balance
 - `getBalance()` - Get contract's total balance
 
@@ -64,6 +62,5 @@ https://amoy.polygonscan.com/address/0x7044bd47899efdb66f29abba82662a3bbf5eac5b
 
 - Contract uses OpenZeppelin's `Ownable` for access control
 - Contract uses OpenZeppelin's `ReentrancyGuard` for security
-- Only owner can call `adminPayout`
-- Users cannot withdraw directly - all withdrawals go through admin
+- Only owner can call `withdraw`
 
