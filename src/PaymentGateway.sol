@@ -6,7 +6,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 
 /**
  * @title PaymentGateway
- * @notice Handles native coin deposits and withdrawals for Polygon (MATIC)
+ * @notice Handles native coin deposits and withdrawals (MATIC on Polygon, BNB on BSC/BEP20)
  * @dev Uses OpenZeppelin Ownable and ReentrancyGuard for security
  */
 contract PaymentGateway is Ownable, ReentrancyGuard {
@@ -25,7 +25,7 @@ contract PaymentGateway is Ownable, ReentrancyGuard {
     constructor(address initialOwner) Ownable(initialOwner) {}
 
     /**
-     * @notice Deposit native coin (MATIC) to the gateway
+     * @notice Deposit native coin (MATIC on Polygon, BNB on BSC) to the gateway
      * @dev Emits Deposit event
      */
     function deposit() external payable nonReentrant {
