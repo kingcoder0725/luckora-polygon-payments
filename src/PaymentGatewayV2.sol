@@ -21,9 +21,6 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
     /// @notice Mapping of token address => user address => deposit amount
     mapping(address => mapping(address => uint256)) public tokenDeposits;
 
-    /// @notice Mapping to track if a token is whitelisted (optional security feature)
-    mapping(address => bool) public whitelistedTokens;
-
     /// @notice Total amount of native tokens deposited across all users (gross deposits)
     /// @dev This value represents total deposits and does not decrease when withdrawals occur
     uint256 public totalNativeDeposits;
@@ -54,9 +51,6 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
         uint256 timestamp
     );
 
-    /// @notice Emitted when a token is whitelisted/blacklisted
-    event TokenWhitelistUpdated(address indexed token, bool whitelisted);
-
     constructor(address initialOwner) Ownable(initialOwner) {
         // OpenZeppelin's Ownable already validates that initialOwner is not address(0)
     }
@@ -84,10 +78,6 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
     function depositToken(address token, uint256 amount) external nonReentrant {
         require(token != address(0), "PaymentGatewayV2: invalid token address");
         require(amount > 0, "PaymentGatewayV2: amount must be greater than 0");
-        
-        // Optional: Check if token is whitelisted (if whitelisting is enabled)
-        // Uncomment the next line if you want to enforce whitelisting
-        // require(whitelistedTokens[token] || whitelistedTokens[address(0)], "PaymentGatewayV2: token not whitelisted");
 
         IERC20 tokenContract = IERC20(token);
         
@@ -178,17 +168,6 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
      */
     function getTokenBalance(address token) external view returns (uint256) {
         return IERC20(token).balanceOf(address(this));
-    }
-
-    /**
-     * @notice Whitelist or blacklist a token (optional security feature)
-     * @param token The token contract address
-     * @param whitelisted Whether the token should be whitelisted
-     * @dev Only callable by owner
-     */
-    function setTokenWhitelist(address token, bool whitelisted) external onlyOwner {
-        whitelistedTokens[token] = whitelisted;
-        emit TokenWhitelistUpdated(token, whitelisted);
     }
 
     /**

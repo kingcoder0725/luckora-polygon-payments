@@ -81,7 +81,6 @@ contract PaymentGatewayV2Test is Test {
     event TokenDeposit(address indexed user, address indexed token, uint256 amount, uint256 timestamp);
     event NativeWithdraw(address indexed to, uint256 amount, uint256 timestamp);
     event TokenWithdraw(address indexed to, address indexed token, uint256 amount, uint256 timestamp);
-    event TokenWhitelistUpdated(address indexed token, bool whitelisted);
 
     function setUp() public {
         owner = address(this);
@@ -298,20 +297,6 @@ contract PaymentGatewayV2Test is Test {
         assertEq(gateway.getTokenDeposit(address(mockToken), user1), 800 ether);
         assertEq(gateway.getTokenDeposit(address(mockToken), user2), 700 ether);
         assertEq(gateway.totalTokenDeposits(address(mockToken)), 1500 ether);
-    }
-
-    function test_TokenWhitelist() public {
-        gateway.setTokenWhitelist(address(mockToken), true);
-        assertTrue(gateway.whitelistedTokens(address(mockToken)));
-
-        gateway.setTokenWhitelist(address(mockToken), false);
-        assertFalse(gateway.whitelistedTokens(address(mockToken)));
-    }
-
-    function test_OnlyOwnerCanSetTokenWhitelist() public {
-        vm.prank(user1);
-        vm.expectRevert();
-        gateway.setTokenWhitelist(address(mockToken), true);
     }
 
     function test_MixedNativeAndTokenDeposits() public {
