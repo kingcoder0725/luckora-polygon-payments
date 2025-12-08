@@ -24,10 +24,12 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
     /// @notice Mapping to track if a token is whitelisted (optional security feature)
     mapping(address => bool) public whitelistedTokens;
 
-    /// @notice Total amount of native tokens deposited across all users
+    /// @notice Total amount of native tokens deposited across all users (gross deposits)
+    /// @dev This value represents total deposits and does not decrease when withdrawals occur
     uint256 public totalNativeDeposits;
 
-    /// @notice Mapping of token address => total deposits
+    /// @notice Mapping of token address => total deposits (gross deposits)
+    /// @dev This value represents total deposits and does not decrease when withdrawals occur
     mapping(address => uint256) public totalTokenDeposits;
 
     /// @notice Emitted when a user deposits native coin
@@ -55,7 +57,9 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
     /// @notice Emitted when a token is whitelisted/blacklisted
     event TokenWhitelistUpdated(address indexed token, bool whitelisted);
 
-    constructor(address initialOwner) Ownable(initialOwner) {}
+    constructor(address initialOwner) Ownable(initialOwner) {
+        // OpenZeppelin's Ownable already validates that initialOwner is not address(0)
+    }
 
     /**
      * @notice Deposit native coin (MATIC on Polygon, BNB on BSC) to the gateway
@@ -190,8 +194,9 @@ contract PaymentGatewayV2 is Ownable, ReentrancyGuard {
     /**
      * @notice Receive function to allow direct native token transfers
      * @dev Automatically processes as a native deposit
+     * @dev Protected by ReentrancyGuard to prevent reentrancy attacks
      */
-    receive() external payable {
+    receive() external payable nonReentrant {
         nativeDeposits[msg.sender] += msg.value;
         totalNativeDeposits += msg.value;
         emit NativeDeposit(msg.sender, msg.value, block.timestamp);
