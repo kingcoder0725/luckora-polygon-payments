@@ -11,9 +11,13 @@ polygon = "${POLYGON_RPC_URL}"
 amoy = "${AMOY_RPC_URL}"
 bsc = "${BSC_RPC_URL}"
 bsc_testnet = "${BSC_TESTNET_RPC_URL}"
+base = "${BASE_RPC_URL}"
+base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
 
 [etherscan]
 polygon = { key = "${POLYGONSCAN_API_KEY}" }
 amoy = { key = "${POLYGONSCAN_API_KEY}" }
 bsc = { key = "${BSCSCAN_API_KEY}", url = "https://api.bscscan.com/api" }
 bsc_testnet = { key = "${BSCSCAN_API_KEY}", url = "https://api-testnet.bscscan.com/api" }
+base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
+base_sepolia = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }

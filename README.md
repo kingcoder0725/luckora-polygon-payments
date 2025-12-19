@@ -108,7 +108,20 @@ This project contains a PaymentGateway contract that can be deployed to:
      -vvvv
    ```
 
-3. **Deploy to Polygon (existing)**
+3. **Deploy to Base Mainnet**
+   ```bash
+   source .env
+   forge script script/DeployBase.s.sol:DeployBaseScript \
+     --rpc-url $BASE_RPC_URL \
+     --private-key $PRIVATE_KEY \
+     --broadcast \
+     --verify \
+     --verifier-url https://api.basescan.org/api \
+     --verifier base \
+     -vvvv
+   ```
+
+4. **Deploy to Polygon (existing)**
    ```bash
    source .env
    forge script script/Deploy.s.sol:DeployScript \
@@ -128,9 +141,16 @@ See `DEPLOYMENT.md` for complete environment variable documentation.
 - `BSC_RPC_URL` - BSC mainnet RPC endpoint
 - `BSCSCAN_API_KEY` - BSCScan API key for verification
 
+**Required for Base:**
+- `PRIVATE_KEY` - Deployer's private key (keep existing)
+- `BASE_RPC_URL` - Base mainnet RPC endpoint (e.g. https://mainnet.base.org)
+- `BASESCAN_API_KEY` - BaseScan API key for verification
+
 **Optional:**
 - `BSC_OWNER_ADDRESS` - Contract owner address (defaults to deployer)
 - `BSC_TESTNET_RPC_URL` - For testnet deployments
+- `BASE_OWNER_ADDRESS` - Custom owner address (defaults to deployer)
+- `BASE_SEPOLIA_RPC_URL` - For Base Sepolia test deployments
 
 ### Network Information
 
@@ -144,6 +164,12 @@ See `DEPLOYMENT.md` for complete environment variable documentation.
 - Chain ID: 97
 - Explorer: https://testnet.bscscan.com
 - RPC: https://data-seed-prebsc-1-s1.binance.org:8545/
+
+**Base Mainnet:**
+- Chain ID: 8453
+- Native Token: ETH
+- Explorer: https://basescan.org
+- RPC: https://mainnet.base.org
 
 ### Documentation
 

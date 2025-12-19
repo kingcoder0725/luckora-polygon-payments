@@ -184,6 +184,61 @@ BSC_CHAIN_ID=56
 
 ---
 
+## Base Mainnet Deployment
+
+### Deployment Command
+
+```bash
+cd polygon-payments
+source .env
+forge script script/DeployBase.s.sol:DeployBaseScript \
+  --rpc-url $BASE_RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --verifier-url https://api.basescan.org/api \
+  --verifier base \
+  -vvvv
+```
+
+### Environment Variables Required
+
+Add these to your `.env` file (keep existing `PRIVATE_KEY`):
+
+```bash
+# Base L2 Configuration
+BASE_RPC_URL=https://mainnet.base.org
+# Optional Base Sepolia for testing
+BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+
+# BaseScan API Key (for verification)
+BASESCAN_API_KEY=your_basescan_api_key_here
+
+# Owner address (optional, defaults to deployer address)
+BASE_OWNER_ADDRESS=0xYourOwnerAddressHere
+```
+
+### Backend Configuration After Deployment
+
+After successful deployment, update your backend `.env`:
+
+```bash
+# Base L2 Configuration
+BASE_CONTRACT_ADDRESS=<deployed_contract_address>
+BASE_RPC_URL=https://mainnet.base.org
+BASE_ADMIN_PRIVATE_KEY=<same_as_PRIVATE_KEY_or_owner_key>
+BASE_CHAIN_ID=8453
+```
+
+### Network Information
+
+- **Base Mainnet Chain ID**: 8453
+- **Native Token**: ETH
+- **Block Explorer**: https://basescan.org
+- **RPC Endpoint**: https://mainnet.base.org
+
+---
+
 ## PaymentGatewayV2 - USDT/ERC20 Token Support
 
 ### Overview
