@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Base L2 Deployment Script
-# Deploys PaymentGatewayV2 to Base mainnet
+# Ethereum Mainnet Deployment Script
+# This script deploys the PaymentGateway contract to Ethereum mainnet
 
 set -e
 
 echo "=========================================="
-echo "Base L2 PaymentGatewayV2 Deployment"
+echo "Ethereum Mainnet PaymentGateway Deployment"
 echo "=========================================="
 
 # Check if .env file exists
 if [ ! -f .env ]; then
     echo "❌ Error: .env file not found!"
     echo "Please create a .env file with the required variables."
-    echo "See DEPLOYMENT.md for required environment variables."
     exit 1
 fi
 
@@ -26,25 +25,25 @@ if [ -z "$PRIVATE_KEY" ]; then
     exit 1
 fi
 
-if [ -z "$BASE_RPC_URL" ]; then
-    echo "❌ Error: BASE_RPC_URL not set in .env"
-    echo "Please add BASE_RPC_URL to your .env file"
+if [ -z "$ETHEREUM_RPC_URL" ]; then
+    echo "❌ Error: ETHEREUM_RPC_URL not set in .env"
+    echo "Please add ETHEREUM_RPC_URL to your .env file"
+    echo "Example: ETHEREUM_RPC_URL=https://mainnet.infura.io/v3/YOUR_PROJECT_ID"
     exit 1
 fi
 
-# Optional verification
-if [ -z "$BASESCAN_API_KEY" ]; then
-    echo "⚠️  Warning: BASESCAN_API_KEY not set. Contract will not be verified."
+if [ -z "$ETHERSCAN_API_KEY" ]; then
+    echo "⚠️  Warning: ETHERSCAN_API_KEY not set. Contract will not be verified."
     VERIFY_FLAG=""
 else
-    VERIFY_FLAG="--verify --verifier-url https://api.basescan.org/api --verifier base"
+    VERIFY_FLAG="--verify --verifier-url https://api.etherscan.io/api --verifier ethereum"
 fi
 
 echo ""
 echo "📋 Deployment Configuration:"
-echo "  Network: Base Mainnet (Chain ID: 8453)"
-echo "  RPC URL: $BASE_RPC_URL"
-echo "  Owner: ${BASE_OWNER_ADDRESS:-Deployer address}"
+echo "  Network: Ethereum Mainnet (Chain ID: 1)"
+echo "  RPC URL: $ETHEREUM_RPC_URL"
+echo "  Owner: ${ETHEREUM_OWNER_ADDRESS:-Deployer address}"
 echo "  Verification: ${VERIFY_FLAG:-Disabled}"
 echo ""
 
@@ -59,8 +58,8 @@ echo ""
 echo "🚀 Deploying contract..."
 echo ""
 
-forge script script/DeployBase.s.sol:DeployBaseScript \
-  --rpc-url "$BASE_RPC_URL" \
+forge script script/DeployEthereum.s.sol:DeployEthereumScript \
+  --rpc-url "$ETHEREUM_RPC_URL" \
   --private-key "$PRIVATE_KEY" \
   --broadcast \
   $VERIFY_FLAG \
@@ -71,11 +70,6 @@ echo "✅ Deployment complete!"
 echo ""
 echo "📝 Next steps:"
 echo "1. Copy the deployed contract address from above"
-echo "2. Update your backend .env with:"
-echo "   BASE_CONTRACT_ADDRESS=<deployed_address>"
-echo "   BASE_RPC_URL=$BASE_RPC_URL"
-echo "   BASE_ADMIN_PRIVATE_KEY=$PRIVATE_KEY"
-echo "   BASE_CHAIN_ID=8453"
+echo "2. Update ethereum-tokens-database.json with the contract address"
 echo ""
-
 
