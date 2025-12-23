@@ -121,7 +121,25 @@ This project contains a PaymentGateway contract that can be deployed to:
      -vvvv
    ```
 
-4. **Deploy to Polygon (existing)**
+4. **Deploy to Polygon Mainnet**
+   ```bash
+   ./deploy-polygon.sh
+   ```
+   
+   Or manually:
+   ```bash
+   source .env
+   forge script script/DeployPolygon.s.sol:DeployPolygonScript \
+     --rpc-url $POLYGON_RPC_URL \
+     --private-key $PRIVATE_KEY \
+     --broadcast \
+     --verify \
+     --verifier-url https://api.polygonscan.com/api \
+     --verifier polygonscan \
+     -vvvv
+   ```
+
+5. **Deploy to Polygon Amoy Testnet (existing)**
    ```bash
    source .env
    forge script script/Deploy.s.sol:DeployScript \
@@ -146,11 +164,18 @@ See `DEPLOYMENT.md` for complete environment variable documentation.
 - `BASE_RPC_URL` - Base mainnet RPC endpoint (e.g. https://mainnet.base.org)
 - `BASESCAN_API_KEY` - BaseScan API key for verification
 
+**Required for Polygon:**
+- `PRIVATE_KEY` - Deployer's private key (keep existing)
+- `POLYGON_RPC_URL` - Polygon mainnet RPC endpoint (e.g. https://polygon-rpc.com)
+- `POLYGONSCAN_API_KEY` - PolygonScan API key for verification
+
 **Optional:**
 - `BSC_OWNER_ADDRESS` - Contract owner address (defaults to deployer)
 - `BSC_TESTNET_RPC_URL` - For testnet deployments
 - `BASE_OWNER_ADDRESS` - Custom owner address (defaults to deployer)
 - `BASE_SEPOLIA_RPC_URL` - For Base Sepolia test deployments
+- `POLYGON_OWNER_ADDRESS` - Custom owner address (defaults to deployer)
+- `AMOY_RPC_URL` - For Polygon Amoy testnet deployments
 
 ### Network Information
 
@@ -170,6 +195,12 @@ See `DEPLOYMENT.md` for complete environment variable documentation.
 - Native Token: ETH
 - Explorer: https://basescan.org
 - RPC: https://mainnet.base.org
+
+**Polygon Mainnet:**
+- Chain ID: 137
+- Native Token: MATIC
+- Explorer: https://polygonscan.com
+- RPC: https://polygon-rpc.com
 
 ### Documentation
 

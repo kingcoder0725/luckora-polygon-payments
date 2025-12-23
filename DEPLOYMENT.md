@@ -239,6 +239,76 @@ BASE_CHAIN_ID=8453
 
 ---
 
+## Polygon Mainnet Deployment
+
+### Deployment Command
+
+```bash
+cd ether-payments
+source .env
+forge script script/DeployPolygon.s.sol:DeployPolygonScript \
+  --rpc-url $POLYGON_RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast \
+  --verify \
+  --verifier-url https://api.polygonscan.com/api \
+  --verifier polygonscan \
+  -vvvv
+```
+
+### Environment Variables Required
+
+Add these to your `.env` file (keep existing `PRIVATE_KEY`):
+
+```bash
+# Polygon Mainnet Configuration
+POLYGON_RPC_URL=https://polygon-rpc.com
+# OR use a provider like:
+# POLYGON_RPC_URL=https://rpc.ankr.com/polygon
+# POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/YOUR_API_KEY
+
+# PolygonScan API Key (for verification)
+POLYGONSCAN_API_KEY=your_polygonscan_api_key_here
+
+# Owner address (optional, defaults to deployer address)
+POLYGON_OWNER_ADDRESS=0xYourOwnerAddressHere
+```
+
+### Backend Configuration After Deployment
+
+After successful deployment, update your backend `.env`:
+
+```bash
+# Polygon Mainnet Configuration
+POLYGON_CONTRACT_ADDRESS=<deployed_contract_address>
+POLYGON_RPC_URL=https://polygon-rpc.com
+POLYGON_ADMIN_PRIVATE_KEY=<same_as_PRIVATE_KEY_or_owner_key>
+POLYGON_CHAIN_ID=137
+```
+
+### Network Information
+
+- **Polygon Mainnet Chain ID**: 137
+- **Native Token**: MATIC
+- **Block Explorer**: https://polygonscan.com
+- **RPC Endpoints**: 
+  - `https://polygon-rpc.com`
+  - `https://rpc.ankr.com/polygon`
+  - `https://polygon-mainnet.g.alchemy.com/v2/YOUR_API_KEY`
+
+### Common Polygon Token Addresses
+
+**Mainnet:**
+- USDT: `0xc2132D05D31c914a87C6611C10748AEb04B58e8F`
+- USDC: `0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174`
+- WBTC: `0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6`
+- WETH: `0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619`
+- AAVE: `0xD6DF932A45C0f255f85145f286eA0b292b21C90B`
+- CRV: `0x172370d5Cd63279eFa6d502DAB29171933a610AF`
+- LINK: `0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39`
+
+---
+
 ## PaymentGatewayV2 - USDT/ERC20 Token Support
 
 ### Overview
